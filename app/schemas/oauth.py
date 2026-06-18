@@ -8,4 +8,5 @@ class AuthorizeRequest(BaseModel):
 
 class TokenRequest(BaseModel):
     client_id: str = Field(..., min_length=1)
+    client_secret: str
     authorization_code: str = Field(..., min_length=1)

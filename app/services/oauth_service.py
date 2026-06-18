@@ -33,15 +33,22 @@ class OauthService:
 
         return {"authorization_code": code}
 
-    def authorization(self, code: str, client_id: str):
+    def authorization(self, code: str, client_id: str,
+                      client_secret: str, request):
         """Возвращает JWT-токен"""
 
         client = clients.get(client_id)
 
         if not client:
             raise HTTPException(
-                status_code=404,
-                detail="Неизвестный клиент"
+                status_code=401,
+                detail="Неверные данные"
+            )
+
+        if client["client_secret"] != client_secret:
+            raise HTTPException(
+                status_code=401,
+                detail="Неверные данные"
             )
 
         auth_code = oauth_codes.get(code)
@@ -49,7 +56,7 @@ class OauthService:
         if not auth_code:
             raise HTTPException(
                 status_code=401,
-                detail="Неверный код авторизации"
+                detail="Неверные данные"
             )
 
         if auth_code["expires_at"] < datetime.utcnow():
@@ -60,12 +67,16 @@ class OauthService:
                 detail="Срок действия кода истек"
             )
 
-        access_token = Token(client.get("client_secret"))
-
-        return access_token.create_access_token(
+        access_token = request.app.state.token_service.create_access_token(
             {
                 "login": auth_code["login"],
                 "name": users.get(auth_code["login"]).get("name"),
             }
         )
 
+        del oauth_codes[code]
+
+        return {
+        "access_token": access_token,
+        "token_type": "Bearer",
+    }

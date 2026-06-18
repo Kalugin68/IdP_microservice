@@ -13,11 +13,8 @@ class Token:
         data = payload.copy()
         data["exp"] = datetime.utcnow() + timedelta(minutes=30)
 
-        return {
-            "access_token": jwt.encode(
+        return jwt.encode(
                 data,
                 self.secret_key,
                 algorithm=self.algorithm,
-            ),
-            "token_type": "Bearer",
-        }
+            )

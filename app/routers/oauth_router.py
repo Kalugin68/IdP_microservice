@@ -14,4 +14,5 @@ def authentication_route(request:Request, data: AuthorizeRequest):
 def token_route(request: Request, data: TokenRequest):
     """Маршрут получения токена для авторизации у клиента"""
 
-    return request.app.state.oauth_service.authorization(data.authorization_code, data.client_id)
+    return request.app.state.oauth_service.authorization(
+        data.authorization_code, data.client_id, data.client_secret, request)
