@@ -1,0 +1,18 @@
+services:
+  identity-provider:
+    image: 127.0.0.1:5000/idp:latest
+    build:
+      context: ./app
+    ports:
+      - "8004:8000"
+    restart: unless-stopped
+
+    healthcheck:
+      test: [ "CMD",
+              "python",
+              "-c",
+              "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/health/liveness')" ]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

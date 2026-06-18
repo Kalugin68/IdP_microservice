@@ -1,0 +1,45 @@
+name: Deploy Service
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+    runs-on: debian
+
+    defaults:
+      run:
+        shell: sh
+
+    steps:
+      - name: Clone repository
+        run: git clone ${{ gitea.server_url }}/${{ gitea.repository }}.git .
+
+      - name: Build Docker image
+        run: |
+          docker build \
+          --platform linux/arm64 \
+          -t 127.0.0.1:5000/idp:latest \
+          ./app
+
+      - name: Push Docker image
+        run: docker push 127.0.0.1:5000/idp:latest
+
+  deploy:
+    needs: build
+
+    runs-on: debian
+
+    defaults:
+      run:
+        shell: sh
+
+    steps:
+      - name: Clone repository
+        run: git clone ${{ gitea.server_url }}/${{ gitea.repository }}.git .
+
+      - name: Deploy
+        run: docker compose up -d
