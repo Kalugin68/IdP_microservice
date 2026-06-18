@@ -1,0 +1,23 @@
+from datetime import datetime, timedelta
+from jose import jwt
+
+
+class Token:
+    def __init__(self, secret_key: str):
+        self.secret_key = secret_key
+        self.algorithm = "HS256"
+
+    def create_access_token(self, payload: dict):
+        """Создаёт JWT-token"""
+
+        data = payload.copy()
+        data["exp"] = datetime.utcnow() + timedelta(minutes=30)
+
+        return {
+            "access_token": jwt.encode(
+                data,
+                self.secret_key,
+                algorithm=self.algorithm,
+            ),
+            "token_type": "Bearer",
+        }
