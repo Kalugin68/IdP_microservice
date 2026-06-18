@@ -1,4 +1,21 @@
 services:
+
+  postgres:
+    image: postgres:17-alpine
+
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
   identity-provider:
     image: 127.0.0.1:5000/idp:latest
     build:
@@ -7,6 +24,8 @@ services:
       - "8004:8000"
     env_file:
       - .env
+    depends_on:
+      - postgres
     restart: unless-stopped
 
     healthcheck:
@@ -18,3 +37,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
+
+volumes:
+  postgres_data:

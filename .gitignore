@@ -53,6 +53,7 @@ uvicorn.log
 # Database
 *.sqlite3
 *.db
+init.sql
 
 # Alembic
 alembic/versions/*.pyc
