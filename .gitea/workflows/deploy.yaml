@@ -41,5 +41,11 @@ jobs:
       - name: Clone repository
         run: git clone ${{ gitea.server_url }}/${{ gitea.repository }}.git .
 
+      - name: Create .env
+        run: |
+          cat > .env << EOF
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          EOF
+
       - name: Deploy
         run: docker compose up -d
