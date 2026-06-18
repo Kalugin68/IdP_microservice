@@ -54,12 +54,6 @@ jobs:
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           EOF
 
-      - name: Debug
-        run: |
-          pwd
-          ls -la
-          find . -name init.sql
-
       - name: Deploy
         run: |
           docker compose down -v
