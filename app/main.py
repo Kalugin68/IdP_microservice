@@ -7,6 +7,7 @@ from repositories.users import UserRepository
 from routers import oauth_router, healthcheck_router
 from services.oauth_service import OauthService
 from services.token_service import Token
+from services.db_init_service import DBInitService
 from config.settings import Settings
 from config.database import DBConfig
 
@@ -23,6 +24,9 @@ async def lifespan(app: FastAPI):
         db_name=settings.db_name
     )
     app.state.db_config = db_config
+
+    DBInitService.init_db(db_config.engine)
+    DBInitService.seed_data(db_config.engine)
 
     app.state.user_repo = UserRepository(db_config.engine)
     app.state.client_repo = ClientRepository(db_config.engine)

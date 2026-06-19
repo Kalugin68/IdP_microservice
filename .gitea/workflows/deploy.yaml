@@ -63,6 +63,4 @@ jobs:
           stat sql/init.sql
 
       - name: Deploy
-        run: |
-          docker compose down -v
-          docker compose up -d
+        run: docker compose up -d
