@@ -24,6 +24,7 @@ class DBInitService:
                 CREATE TABLE IF NOT EXISTS clients
                 (
                     id SERIAL PRIMARY KEY,
+                    client_name VARCHAR(255) NOT NULL,
                     client_id VARCHAR(255) UNIQUE NOT NULL,
                     client_secret VARCHAR(255) NOT NULL
                 )
@@ -58,10 +59,11 @@ class DBInitService:
 
             conn.execute(
                 text("""
-                INSERT INTO clients(client_id, client_secret)
+                INSERT INTO clients(client_name, client_id, client_secret)
                 VALUES 
                 (
                     'notifications',
+                    '36-mggwergtwe35-43633f',
                     'super-secret-key'
                 )
                 ON CONFLICT (client_id) DO NOTHING

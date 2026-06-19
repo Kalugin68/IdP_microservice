@@ -4,10 +4,11 @@ from fastapi import FastAPI
 from repositories.clients import ClientRepository
 from repositories.oauth_codes import OAuthRepository
 from repositories.users import UserRepository
-from routers import oauth_router, healthcheck_router
+from routers import oauth_router, healthcheck_router, clients_router
 from services.oauth_service import OauthService
 from services.token_service import Token
 from services.db_init_service import DBInitService
+from services.clients_service import ClientService
 from config.settings import Settings
 from config.database import DBConfig
 
@@ -34,6 +35,7 @@ async def lifespan(app: FastAPI):
 
     app.state.token_service = Token(secret_key=settings.jwt_secret)
     app.state.oauth_service = OauthService()
+    app.state.clients_service = ClientService()
 
     yield
 
@@ -41,6 +43,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(oauth_router.router)
 app.include_router(healthcheck_router.router)
+app.include_router(clients_router.router)
 
 @app.get("/")
 def root():
