@@ -2,9 +2,6 @@ from fastapi import HTTPException
 from uuid import uuid4
 from datetime import datetime, timedelta
 
-from models.data import users, clients, oauth_codes
-
-
 
 class OauthService:
     """Класс для работы с авторизацией и аутентификацией"""
