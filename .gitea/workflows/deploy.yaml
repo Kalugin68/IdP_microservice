@@ -54,13 +54,5 @@ jobs:
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           EOF
 
-      - name: Debug SQL file
-        run: |
-          pwd
-          ls -la
-          ls -la sql
-          file sql/init.sql
-          stat sql/init.sql
-
       - name: Deploy
         run: docker compose up -d
