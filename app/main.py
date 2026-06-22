@@ -26,8 +26,8 @@ async def lifespan(app: FastAPI):
     )
     app.state.db_config = db_config
 
-    DBInitService.init_db(db_config.engine)
-    DBInitService.seed_data(db_config.engine)
+    await DBInitService.init_db(db_config.engine)
+    await DBInitService.seed_data(db_config.engine)
 
     app.state.user_repo = UserRepository(db_config.engine)
     app.state.client_repo = ClientRepository(db_config.engine)

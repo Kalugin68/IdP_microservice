@@ -7,11 +7,11 @@ class OAuthRepository:
     def __init__(self, engine):
         self.engine = engine
 
-    def create_code(self, code: str, login: str, expires_at: str):
+    async def create_code(self, code: str, login: str, expires_at: str):
         """Метод, который добавялет код авторизации в бд"""
 
-        with self.engine.begin() as conn:
-            conn.execute(
+        async with self.engine.begin() as conn:
+            await conn.execute(
                 text("""
                     INSERT INTO oauth_codes (code, login, expires_at)
                     VALUES (
@@ -27,12 +27,12 @@ class OAuthRepository:
                 },
             )
 
-    def get_code(self, code: str):
+    async def get_code(self, code: str):
         """Метод, который возвращает данные
          кода авторизации (логин, длительность)"""
 
-        with self.engine.begin() as conn:
-            result = conn.execute(
+        async with self.engine.begin() as conn:
+            result = await conn.execute(
                 text("""
                     SELECT login, expires_at
                     FROM oauth_codes
@@ -43,11 +43,11 @@ class OAuthRepository:
 
             return result.mappings().first()
 
-    def delete_code(self, code: str):
+    async def delete_code(self, code: str):
         """Метод, который удаляет код авторизации из бд"""
 
-        with self.engine.begin() as conn:
-            conn.execute(
+        async with self.engine.begin() as conn:
+            await conn.execute(
                 text("""
                     DELETE FROM oauth_codes
                         WHERE code = :code

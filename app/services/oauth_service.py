@@ -6,10 +6,10 @@ from datetime import datetime, timedelta
 class OauthService:
     """Класс для работы с авторизацией и аутентификацией"""
 
-    def authentication(self, request, login: str, password: str):
+    async def authentication(self, request, login: str, password: str):
         """Возвращает код авторизации"""
 
-        user = request.app.state.user_repo.get_by_login(login)
+        user = await request.app.state.user_repo.get_by_login(login)
 
         if not user:
             raise HTTPException(
@@ -26,15 +26,15 @@ class OauthService:
         code = str(uuid4())
         expires_at = datetime.utcnow() + timedelta(minutes=5)
 
-        request.app.state.oauth_repo.create_code(code, login, expires_at)
+        await request.app.state.oauth_repo.create_code(code, login, expires_at)
 
         return {"authorization_code": code}
 
-    def authorization(self, request, code: str, client_id: str,
+    async def authorization(self, request, code: str, client_id: str,
                       client_secret: str):
         """Возвращает JWT-токен"""
 
-        client = request.app.state.client_repo.get_by_client_id(client_id)
+        client = await request.app.state.client_repo.get_by_client_id(client_id)
 
         if not client:
             raise HTTPException(
@@ -48,7 +48,7 @@ class OauthService:
                 detail="Неверные данные"
             )
 
-        auth_code = request.app.state.oauth_repo.get_code(code)
+        auth_code = await request.app.state.oauth_repo.get_code(code)
 
         if not auth_code:
             raise HTTPException(
@@ -57,23 +57,23 @@ class OauthService:
             )
 
         if auth_code["expires_at"] < datetime.utcnow():
-            request.app.state.oauth_repo.delete_code(code)
+            await request.app.state.oauth_repo.delete_code(code)
 
             raise HTTPException(
                 status_code=401,
                 detail="Срок действия кода истек"
             )
 
-        name = request.app.state.user_repo.get_by_login(auth_code["login"]).get("name")
+        user = await request.app.state.user_repo.get_by_login(auth_code["login"])
 
         access_token = request.app.state.token_service.create_access_token(
             {
                 "login": auth_code["login"],
-                "name": name,
+                "name": user["name"],
             }
         )
 
-        request.app.state.oauth_repo.delete_code(code)
+        await request.app.state.oauth_repo.delete_code(code)
 
         return {
         "access_token": access_token,

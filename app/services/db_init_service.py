@@ -4,11 +4,11 @@ from sqlalchemy import text
 class DBInitService:
 
     @staticmethod
-    def init_db(engine):
+    async def init_db(engine):
         """Метод, который создаёт таблицы"""
 
-        with engine.begin() as conn:
-            conn.execute(
+        async with engine.begin() as conn:
+            await conn.execute(
                 text("""
                 CREATE TABLE IF NOT EXISTS users
                 (
@@ -19,7 +19,7 @@ class DBInitService:
                 )
                      """))
 
-            conn.execute(
+            await conn.execute(
                 text("""
                 CREATE TABLE IF NOT EXISTS clients
                 (
@@ -30,7 +30,7 @@ class DBInitService:
                 )
                 """))
 
-            conn.execute(
+            await conn.execute(
                 text("""
                 CREATE TABLE IF NOT EXISTS oauth_codes
                 (
@@ -41,11 +41,11 @@ class DBInitService:
                 """))
 
     @staticmethod
-    def seed_data(engine):
+    async def seed_data(engine):
         """Метод для заполнения таблиц данными"""
 
-        with engine.begin() as conn:
-            conn.execute(
+        async with engine.begin() as conn:
+            await conn.execute(
                 text("""
                 INSERT INTO users(login, password, name)
                 VALUES 
@@ -57,7 +57,7 @@ class DBInitService:
                 ON CONFLICT (login) DO NOTHING
                 """))
 
-            conn.execute(
+            await conn.execute(
                 text("""
                 INSERT INTO clients(client_name, client_id, client_secret)
                 VALUES 

@@ -9,11 +9,11 @@ class ClientRepository:
     def __init__(self, engine):
         self.engine = engine
 
-    def get_by_client_id(self, client_id: str):
+    async def get_by_client_id(self, client_id: str):
         """Метод, который возвращает клиента по его id"""
 
-        with self.engine.begin() as conn:
-            result = conn.execute(
+        async with self.engine.begin() as conn:
+            result = await conn.execute(
                 text("""
                      SELECT client_name, client_id, client_secret
                      FROM clients
@@ -24,11 +24,11 @@ class ClientRepository:
 
             return result.mappings().first()
 
-    def create_client(self, client_name: str, client_id: str, client_secret: str):
+    async def create_client(self, client_name: str, client_id: str, client_secret: str):
         """Метод, который добавляет клиента в бд"""
 
-        with self.engine.begin() as conn:
-            conn.execute(
+        async with self.engine.begin() as conn:
+            await conn.execute(
                 text("""
                 INSERT INTO clients (client_name, client_id, client_secret)
                 VALUES 

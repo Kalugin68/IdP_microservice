@@ -8,11 +8,11 @@ class UserRepository:
     def __init__(self, engine):
         self.engine = engine
 
-    def get_by_login(self, login: str):
+    async def get_by_login(self, login: str):
         """Метод, который возвращает данные пользователя по его логину"""
 
-        with self.engine.begin() as conn:
-            result = conn.execute(
+        async with self.engine.begin() as conn:
+            result = await conn.execute(
                 text("""
                     SELECT login, password, name
                     FROM users
