@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Clone repository
-        run: git clone ${{ gitea.server_url }}/${{ gitea.repository }}.git .
+        run: git clone http://100.110.100.100/${{ gitea.repository }}.git .
 
       - name: Build Docker image
         run: |
@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Clone repository
-        run: git clone ${{ gitea.server_url }}/${{ gitea.repository }}.git .
+        run: git clone http://100.110.100.100/${{ gitea.repository }}.git .
 
       - name: Create .env
         run: |
