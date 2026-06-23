@@ -1,39 +1,20 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from repositories.clients import ClientRepository
-from repositories.oauth_codes import OAuthRepository
-from repositories.users import UserRepository
-from routers import oauth_router, healthcheck_router, clients_router
 from services.oauth_service import OauthService
 from services.token_service import Token
-from services.db_init_service import DBInitService
 from services.clients_service import ClientService
-from config.settings import Settings
-from config.database import DBConfig
+from config import Env
+from api import api_routes
+from jat import TokenManager
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    settings = Settings()
+    env = Env()
 
-    db_config = DBConfig(
-        db_user=settings.db_user,
-        db_password=settings.db_password,
-        db_host=settings.db_host,
-        db_port=settings.db_port,
-        db_name=settings.db_name
-    )
-    app.state.db_config = db_config
-
-    await DBInitService.init_db(db_config.engine)
-    await DBInitService.seed_data(db_config.engine)
-
-    app.state.user_repo = UserRepository(db_config.engine)
-    app.state.client_repo = ClientRepository(db_config.engine)
-    app.state.oauth_repo = OAuthRepository(db_config.engine)
-
-    app.state.token_service = Token(secret_key=settings.jwt_secret)
+    app.state.token_manager = TokenManager()
+    app.state.token_service = Token(secret_key=env.jwt_secret)
     app.state.oauth_service = OauthService()
     app.state.clients_service = ClientService()
 
@@ -41,6 +22,5 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(oauth_router.router)
-app.include_router(healthcheck_router.router)
-app.include_router(clients_router.router)
+
+app.include_router(api_routes())
