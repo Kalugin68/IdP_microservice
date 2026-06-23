@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Request
+
 from schemas.clients import RegisterClientRequest
 
+
 router = APIRouter(prefix="/clients", tags=["Clients"])
+
 
 @router.post("/register")
 async def register_client(request: Request, data: RegisterClientRequest):

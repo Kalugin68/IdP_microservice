@@ -44,7 +44,3 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(oauth_router.router)
 app.include_router(healthcheck_router.router)
 app.include_router(clients_router.router)
-
-@app.get("/")
-def root():
-    return {"message": "Hello World"}

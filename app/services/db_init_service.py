@@ -2,11 +2,8 @@ from sqlalchemy import text
 
 
 class DBInitService:
-
     @staticmethod
     async def init_db(engine):
-        """Метод, который создаёт таблицы"""
-
         async with engine.begin() as conn:
             await conn.execute(
                 text("""
@@ -42,8 +39,6 @@ class DBInitService:
 
     @staticmethod
     async def seed_data(engine):
-        """Метод для заполнения таблиц данными"""
-
         async with engine.begin() as conn:
             await conn.execute(
                 text("""

@@ -2,14 +2,10 @@ from sqlalchemy import text
 
 
 class OAuthRepository:
-    """Класс для работы с кодами авторизации"""
-
     def __init__(self, engine):
         self.engine = engine
 
     async def create_code(self, code: str, login: str, expires_at: str):
-        """Метод, который добавялет код авторизации в бд"""
-
         async with self.engine.begin() as conn:
             await conn.execute(
                 text("""
@@ -28,9 +24,6 @@ class OAuthRepository:
             )
 
     async def get_code(self, code: str):
-        """Метод, который возвращает данные
-         кода авторизации (логин, длительность)"""
-
         async with self.engine.begin() as conn:
             result = await conn.execute(
                 text("""
@@ -44,8 +37,6 @@ class OAuthRepository:
             return result.mappings().first()
 
     async def delete_code(self, code: str):
-        """Метод, который удаляет код авторизации из бд"""
-
         async with self.engine.begin() as conn:
             await conn.execute(
                 text("""

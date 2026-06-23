@@ -1,7 +1,7 @@
 from uuid import uuid4
 
-class ClientService:
 
+class ClientService:
     async def register_client(self, request, client_name):
         client_id = str(uuid4())
         client_secret = str(uuid4())

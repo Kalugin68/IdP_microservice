@@ -4,23 +4,19 @@ from datetime import datetime, timedelta
 
 
 class OauthService:
-    """Класс для работы с авторизацией и аутентификацией"""
-
     async def authentication(self, request, login: str, password: str):
-        """Возвращает код авторизации"""
-
         user = await request.app.state.user_repo.get_by_login(login)
 
         if not user:
             raise HTTPException(
                 status_code=401,
-                detail="Неверные учетные данные",
+                detail="Invalid credentials",
             )
 
         if user["password"] != password:
             raise HTTPException(
                 status_code=401,
-                detail="Неверные учетные данные",
+                detail="Invalid credentials",
             )
 
         code = str(uuid4())
@@ -32,20 +28,18 @@ class OauthService:
 
     async def authorization(self, request, code: str, client_id: str,
                       client_secret: str):
-        """Возвращает JWT-токен"""
-
         client = await request.app.state.client_repo.get_by_client_id(client_id)
 
         if not client:
             raise HTTPException(
                 status_code=401,
-                detail="Неверные данные"
+                detail="Invalid credentials"
             )
 
         if client["client_secret"] != client_secret:
             raise HTTPException(
                 status_code=401,
-                detail="Неверные данные"
+                detail="Invalid credentials"
             )
 
         auth_code = await request.app.state.oauth_repo.get_code(code)
@@ -53,7 +47,7 @@ class OauthService:
         if not auth_code:
             raise HTTPException(
                 status_code=401,
-                detail="Неверные данные"
+                detail="Invalid credentials"
             )
 
         if auth_code["expires_at"] < datetime.utcnow():
@@ -61,7 +55,7 @@ class OauthService:
 
             raise HTTPException(
                 status_code=401,
-                detail="Срок действия кода истек"
+                detail="The code has expired"
             )
 
         user = await request.app.state.user_repo.get_by_login(auth_code["login"])

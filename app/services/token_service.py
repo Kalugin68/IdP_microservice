@@ -8,8 +8,6 @@ class Token:
         self.algorithm = "HS256"
 
     def create_access_token(self, payload: dict):
-        """Создаёт JWT-token"""
-
         data = payload.copy()
         data["exp"] = datetime.utcnow() + timedelta(minutes=30)
 

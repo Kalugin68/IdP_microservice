@@ -1,14 +1,17 @@
 from fastapi import APIRouter, Request
+
 from schemas.oauth import TokenRequest, AuthorizeRequest
 
 
 router = APIRouter(prefix="/oauth", tags=["OAuth"])
+
 
 @router.post("/authorize")
 async def authentication_route(request:Request, data: AuthorizeRequest):
     """Маршрут аутентификации пользователя"""
 
     return await request.app.state.oauth_service.authentication(request, data.login, data.password)
+
 
 @router.post("/token")
 async def token_route(request: Request, data: TokenRequest):
