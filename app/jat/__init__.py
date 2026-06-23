@@ -11,11 +11,9 @@ class TokenManager:
         self.algorithm = env.jwt_algorithm
 
         self.private_key = (
-            f"-----BEGIN RSA PRIVATE KEY-----\n"
-            f"Proc-Type: 4,ENCRYPTED\n"
-            f"DEK-Info: AES-128-CBC,E9672DE1CCD48C2411E7189D7A1CBFEF\n"
+            f"-----BEGIN PRIVATE KEY-----\n"
             f"{env.jwt_private}\n"
-            f"-----END RSA PRIVATE KEY-----"
+            f"-----END PRIVATE KEY-----"
         )
 
         self.public_key = (
