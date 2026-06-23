@@ -49,7 +49,7 @@ jobs:
           JWT_PUBLIC=${{ secrets.JWT_PUBLIC }}
           JWT_ALGORITHM=RS256
           
-          POSTGRES_DB=Idp
+          POSTGRES_DB=identity_provider
           POSTGRES_USER=postgres
           POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
 
