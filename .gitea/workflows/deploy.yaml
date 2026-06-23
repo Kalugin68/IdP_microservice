@@ -47,7 +47,7 @@ jobs:
           cat > .env << EOF
           JWT_PRIVATE=${{ secrets.JWT_PRIVATE }}
           JWT_PUBLIC=${{ secrets.JWT_PUBLIC }}
-          JWT_ALGORITHM=RS256
+          JWT_ALGORITHM=EdDSA
           
           DB_NAME=identity_provider
           DB_USER=postgres

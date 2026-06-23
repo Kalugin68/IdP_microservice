@@ -15,8 +15,8 @@ ENV/
 app/.env
 .env.*
 !.env.example
-private.key
-public.key
+private.pem
+public.pem
 
 # Logs
 *.log

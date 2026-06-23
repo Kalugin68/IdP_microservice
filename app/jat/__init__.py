@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 from fastapi import HTTPException
-from jose import jwt
-from jose.exceptions import ExpiredSignatureError, JWTError
-import base64
+from jwt import encode, decode
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 from config import env
 
@@ -13,20 +12,20 @@ class TokenManager:
 
         self.private_key = (
             f"-----BEGIN PRIVATE KEY-----\n"
-            f"{base64.b64decode(env.jwt_private.encode("utf-8"))}\n"
+            f"{env.jwt_private}\n"
             f"-----END PRIVATE KEY-----"
         )
 
         self.public_key = (
             f"-----BEGIN PUBLIC KEY-----\n"
-            f"{base64.b64decode(env.jwt_public.encode("utf-8"))}\n"
+            f"{env.jwt_public}\n"
             f"-----END PUBLIC KEY-----"
         )
 
     def generate(
         self,
         data: dict,
-        ttl_minutes: int = 30,
+        ttl: int = 30,
         token_type: str = "access",
     ) -> str:
 
@@ -34,12 +33,12 @@ class TokenManager:
         payload.update(
             {
                 "type": token_type,
-                "iat": int(datetime.utcnow().timestamp()),
-                "exp": datetime.utcnow() + timedelta(minutes=ttl_minutes),
+                "iat": int(datetime.now().timestamp()),
+                "exp": int(datetime.now().timestamp()) + ttl,
             }
         )
 
-        return jwt.encode(
+        return encode(
             payload,
             self.private_key,
             algorithm=self.algorithm,
@@ -47,7 +46,7 @@ class TokenManager:
 
     def decode(self, token: str) -> dict:
         try:
-            return jwt.decode(
+            return decode(
                 token,
                 self.public_key,
                 algorithms=[self.algorithm],
@@ -59,7 +58,7 @@ class TokenManager:
                 detail="Token expired",
             )
 
-        except JWTError:
+        except InvalidTokenError:
             raise HTTPException(
                 status_code=401,
                 detail="Invalid token",
