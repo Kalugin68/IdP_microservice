@@ -10,13 +10,15 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./app/init-scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - init-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5434:5432"
     restart: unless-stopped
 
   identity-provider:
     image: 127.0.0.1:5000/idp:latest
+    volumes:
+      - init-scripts:/app/init-scripts
     build:
       context: ./app
     ports:
@@ -39,3 +41,4 @@ services:
 
 volumes:
   postgres_data:
+  init-scripts:
