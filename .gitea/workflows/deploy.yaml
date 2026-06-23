@@ -49,9 +49,9 @@ jobs:
           JWT_PUBLIC=${{ secrets.JWT_PUBLIC }}
           JWT_ALGORITHM=RS256
           
-          POSTGRES_DB=identity_provider
-          POSTGRES_USER=postgres
-          POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_NAME=identity_provider
+          DB_USER=postgres
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
 
           DB_DSN=postgresql+asyncpg://postgres:${{ secrets.DB_PASSWORD }}@postgres:5432/identity_provider
           EOF
