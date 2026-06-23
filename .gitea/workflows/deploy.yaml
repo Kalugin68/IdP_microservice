@@ -45,13 +45,13 @@ jobs:
       - name: Create .env
         run: |
           cat > .env << EOF
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
-          
-          DB_HOST=postgres
-          DB_PORT=5432
-          DB_NAME=identity_provider
-          DB_USER=postgres
+          JWT_PRIVATE=${{ secrets.JWT_PRIVATE }}
+          JWT_PUBLIC=${{ secrets.JWT_PUBLIC }}
+          JWT_ALGORITHM=RS256
+
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+
+          DB_DSN=postgresql+asyncpg://postgres:${{ secrets.DB_PASSWORD }}@postgres:5432/identity_provider
           EOF
 
       - name: Deploy
