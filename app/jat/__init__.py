@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError, JWTError
+import base64
 
 from config import env
 
@@ -12,13 +13,13 @@ class TokenManager:
 
         self.private_key = (
             f"-----BEGIN PRIVATE KEY-----\n"
-            f"{env.jwt_private}\n"
+            f"{base64.b64decode(env.jwt_private.encode("utf-8"))}\n"
             f"-----END PRIVATE KEY-----"
         )
 
         self.public_key = (
             f"-----BEGIN PUBLIC KEY-----\n"
-            f"{env.jwt_public}\n"
+            f"{base64.b64decode(env.jwt_public.encode("utf-8"))}\n"
             f"-----END PUBLIC KEY-----"
         )
 
