@@ -8,17 +8,17 @@ from config import env
 
 class TokenManager:
     def __init__(self):
-        self.algorithm = env.JWT_ALGORITHM
+        self.algorithm = env.jwt_algorithm
 
         self.private_key = (
             f"-----BEGIN PRIVATE KEY-----\n"
-            f"{env.JWT_PRIVATE}\n"
+            f"{env.jwt_private}\n"
             f"-----END PRIVATE KEY-----"
         )
 
         self.public_key = (
             f"-----BEGIN PUBLIC KEY-----\n"
-            f"{env.JWT_PUBLIC}\n"
+            f"{env.jwt_public}\n"
             f"-----END PUBLIC KEY-----"
         )
 
