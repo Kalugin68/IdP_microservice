@@ -12,6 +12,8 @@ class TokenManager:
 
         self.private_key = (
             f"-----BEGIN PRIVATE KEY-----\n"
+            f"Proc-Type: 4,ENCRYPTED\n"
+            f"DEK-Info: AES-128-CBC,E9672DE1CCD48C2411E7189D7A1CBFEF\n"
             f"{env.jwt_private}\n"
             f"-----END PRIVATE KEY-----"
         )
@@ -24,13 +26,13 @@ class TokenManager:
 
     def generate(
         self,
-        payload: dict,
+        data: dict,
         ttl_minutes: int = 30,
         token_type: str = "access",
     ) -> str:
 
-        data = payload.copy()
-        data.update(
+        payload = data.copy()
+        payload.update(
             {
                 "type": token_type,
                 "iat": int(datetime.utcnow().timestamp()),
@@ -39,7 +41,7 @@ class TokenManager:
         )
 
         return jwt.encode(
-            data,
+            payload,
             self.private_key,
             algorithm=self.algorithm,
         )
