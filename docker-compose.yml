@@ -33,7 +33,7 @@ services:
       test: [ "CMD",
               "python",
               "-c",
-              "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/health/liveness')" ]
+              "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/api/health/liveness')" ]
       interval: 20s
       timeout: 5s
       retries: 3
