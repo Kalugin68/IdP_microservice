@@ -6,6 +6,7 @@ from api.oauth.dbi import (
     get_auth_code, get_user_by_login, get_client_by_client_id,
     delete_auth_code, create_auth_code
 )
+from exceptions import ServiceException
 
 
 class OauthService:
@@ -13,15 +14,15 @@ class OauthService:
         user = await get_user_by_login(login)
 
         if not user:
-            raise HTTPException(
+            raise ServiceException(
                 status_code=401,
-                detail="Invalid credentials",
+                msg="Invalid credentials",
             )
 
         if user.password != password:
-            raise HTTPException(
+            raise ServiceException(
                 status_code=401,
-                detail="Invalid credentials",
+                msg="Invalid credentials",
             )
 
         code = str(uuid4())
@@ -36,31 +37,31 @@ class OauthService:
         client = await get_client_by_client_id(client_id)
 
         if not client:
-            raise HTTPException(
+            raise ServiceException(
                 status_code=401,
-                detail="Invalid credentials"
+                msg="Invalid credentials"
             )
 
         if client.client_secret != client_secret:
-            raise HTTPException(
+            raise ServiceException(
                 status_code=401,
-                detail="Invalid credentials"
+                msg="Invalid credentials"
             )
 
         auth_code = await get_auth_code(code)
 
         if not auth_code:
-            raise HTTPException(
+            raise ServiceException(
                 status_code=401,
-                detail="Invalid credentials"
+                msg="Invalid credentials"
             )
 
         if auth_code.expires_at < datetime.utcnow():
             await delete_auth_code(code)
 
-            raise HTTPException(
+            raise ServiceException(
                 status_code=401,
-                detail="The code has expired"
+                msg="The code has expired"
             )
 
         user = await get_user_by_login(auth_code.login)

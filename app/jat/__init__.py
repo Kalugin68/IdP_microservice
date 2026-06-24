@@ -1,9 +1,12 @@
-from datetime import datetime, timedelta
-from fastapi import HTTPException
+from datetime import datetime
+
+from fastapi import Request
+from fastapi.security import HTTPBearer
 from jwt import encode, decode
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 from config import env
+from exceptions import ServiceException
 
 
 class TokenManager:
@@ -53,13 +56,30 @@ class TokenManager:
             )
 
         except ExpiredSignatureError:
-            raise HTTPException(
+            raise ServiceException(
                 status_code=401,
-                detail="Token expired",
+                msg="Token expired",
             )
 
-        except InvalidTokenError:
-            raise HTTPException(
+        except InvalidTokenError as e:
+            raise ServiceException(
                 status_code=401,
-                detail="Invalid token",
+                msg=f"Invalid token: {e}",
             )
+
+        except Exception:
+            raise ServiceException(
+                status_code=401,
+                msg="Invalid token"
+            )
+
+
+class bearer_t(HTTPBearer):
+    async def __call__(self, request: Request):
+        auth = await super().__call__(request)
+        self.credentials = auth.credentials
+
+        self.data = request.app.state.token_manager.decode(auth.credentials)
+
+        return self
+

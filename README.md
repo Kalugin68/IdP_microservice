@@ -179,16 +179,20 @@ GET /health/liveness
 
 # Запуск проекта
 
-Создать файл `.env`:
+Создать файл `.env`
 
-```env
-JWT_SECRET=super-secret
+Пример файла `.env.example:`
 
-DB_HOST=postgres
-DB_PORT=5432
+```.env.example
+JWT_PRIVATE=your_private_key
+JWT_PUBLIC=your_public_key
+JWT_ALGORITHM=EdDSA
+
 DB_NAME=identity_provider
 DB_USER=postgres
-DB_PASSWORD=postgres
+DB_PASSWORD=your_password
+
+DB_DSN=postgresql+asyncpg://postgres:password@postgres:5432/identity_provider
 ```
 
 Запуск:
