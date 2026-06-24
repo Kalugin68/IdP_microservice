@@ -6,7 +6,7 @@ from .client import router as ClientAPI
 
 
 def api_routes():
-    router = APIRouter()
+    router = APIRouter(prefix="/api")
 
     router.include_router(HealthAPI)
     router.include_router(OAuthAPI)

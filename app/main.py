@@ -4,7 +4,6 @@ from starlette.responses import JSONResponse
 
 from exceptions import ServiceException
 from services.oauth_service import OauthService
-from services.clients_service import ClientService
 from api import api_routes
 from jat import TokenManager
 
@@ -13,7 +12,6 @@ from jat import TokenManager
 async def lifespan(app: FastAPI):
     app.state.token_manager = TokenManager()
     app.state.oauth_service = OauthService()
-    app.state.clients_service = ClientService()
 
     yield
 
