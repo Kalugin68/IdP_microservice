@@ -12,9 +12,7 @@ async def create_client(client_name: str, client_id: str, client_secret: str):
             :client_secret
         )
         """,
-        **{
-            "client_name": client_name,
-            "client_id": client_id,
-            "client_secret": client_secret,
-        }
+        client_name=client_name,
+        client_id=client_id,
+        client_secret=client_secret
     )

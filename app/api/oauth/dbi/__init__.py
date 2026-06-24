@@ -8,7 +8,7 @@ async def get_client_by_client_id(client_id: str):
         FROM clients
         WHERE client_id = :client_id
         """,
-        **{"client_id": client_id}
+        client_id=client_id
     )
 
 
@@ -19,7 +19,7 @@ async def get_user_by_login(login: str):
         FROM users
         WHERE login = :login
         """,
-        **{"login": login}
+        login=login
     )
 
 
@@ -34,11 +34,9 @@ async def create_auth_code(code: str, login: str, expires_at: str):
             :expires_at
         )
         """,
-        **{
-            "code": code,
-            "login": login,
-            "expires_at": expires_at,
-        }
+        code=code,
+        login=login,
+        expires_at=expires_at
     )
 
 
@@ -49,7 +47,7 @@ async def get_auth_code(code: str):
         FROM oauth_codes
         WHERE code = :code
         """,
-        **{"code": code}
+        code=code
     )
 
 
@@ -60,5 +58,5 @@ async def delete_auth_code(code: str):
         FROM oauth_codes
         WHERE code = :code
         """,
-        **{"code": code}
+        code=code
     )
