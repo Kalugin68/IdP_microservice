@@ -2,16 +2,13 @@ from fastapi import HTTPException
 from uuid import uuid4
 from datetime import datetime, timedelta
 
-from api.oauth.dbi import (
-    get_auth_code, get_user_by_login, get_client_by_client_id,
-    delete_auth_code, create_auth_code
-)
+from api.oauth.dbi import get_user_by_login, get_client_by_client_id
 from api.client.dbi import create_client
 from exceptions import ServiceException
 
 
 class OauthService:
-    async def authentication(self, login: str, password: str):
+    async def authentication(self, request, login: str, password: str):
         user = await get_user_by_login(login)
 
         if not user:
@@ -27,9 +24,10 @@ class OauthService:
             )
 
         code = str(uuid4())
-        expires_at = datetime.utcnow() + timedelta(minutes=5)
 
-        await create_auth_code(code, login, expires_at)
+        request.app.state.auth_codes[code] = {
+            "login": login
+        }
 
         return {"authorization_code": code}
 
@@ -49,7 +47,7 @@ class OauthService:
                 msg="Invalid credentials"
             )
 
-        auth_code = await get_auth_code(code)
+        auth_code = request.app.state.auth_codes.get(code)
 
         if not auth_code:
             raise ServiceException(
@@ -57,25 +55,17 @@ class OauthService:
                 msg="Invalid credentials"
             )
 
-        if auth_code.expires_at < datetime.utcnow():
-            await delete_auth_code(code)
-
-            raise ServiceException(
-                status_code=401,
-                msg="The code has expired"
-            )
-
-        user = await get_user_by_login(auth_code.login)
+        user = await get_user_by_login(auth_code["login"])
 
         access_token = request.app.state.token_manager.generate(
             {
-                "sub": auth_code.login,
+                "sub": auth_code["login"],
                 "name": user.name,
                 "client_id": client_id,
             }
         )
 
-        await delete_auth_code(code)
+        request.app.state.auth_codes.pop(code, None)
 
         return {
         "access_token": access_token,

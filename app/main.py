@@ -1,4 +1,6 @@
 from contextlib import asynccontextmanager
+
+from cachetools import TTLCache
 from fastapi import FastAPI, Request
 from starlette.responses import JSONResponse
 
@@ -10,6 +12,11 @@ from jat import TokenManager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    app.state.auth_codes = TTLCache(
+        maxsize=10000,
+        ttl=300
+    )
+
     app.state.token_manager = TokenManager()
     app.state.oauth_service = OauthService()
 

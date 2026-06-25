@@ -14,13 +14,6 @@ CREATE TABLE IF NOT EXISTS clients
     client_secret VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS oauth_codes
-(
-    code UUID PRIMARY KEY,
-    login VARCHAR(255) NOT NULL,
-    expires_at TIMESTAMP NOT NULL
-);
-
 INSERT INTO users(login, password, name)
 VALUES
 (
