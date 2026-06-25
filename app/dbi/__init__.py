@@ -11,8 +11,8 @@ class Database:
             pool_pre_ping=True,
             pool_timeout=30,
             echo=False,
-            pool_size=50,
-            max_overflow=50
+            pool_size=20,
+            max_overflow=30
         )
 
     async def fetch(self, query: str, **kwargs):
