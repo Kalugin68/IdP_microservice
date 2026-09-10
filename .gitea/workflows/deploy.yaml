@@ -4,25 +4,23 @@ on:
   push:
     branches:
       - main
-      - dev
 
 jobs:
 
   build:
-    runs-on: debian
+    runs-on: [self-hosted, windows, x64]
 
     defaults:
       run:
-        shell: sh
+        shell: powershell
 
     steps:
       - name: Clone repository
-        run: git clone http://100.110.100.100:3030/${{ gitea.repository }}.git .
+        uses: actions/checkout@v6
 
       - name: Build Docker image
         run: |
           docker build \
-          --platform linux/arm64 \
           -t 127.0.0.1:5000/idp:latest \
           ./app
 
@@ -32,15 +30,15 @@ jobs:
   deploy:
     needs: build
 
-    runs-on: debian
+    runs-on: [self-hosted, windows, x64]
 
     defaults:
       run:
-        shell: sh
+        shell: powershell
 
     steps:
       - name: Clone repository
-        run: git clone http://100.110.100.100:3030/${{ gitea.repository }}.git .
+        uses: actions/checkout@v6
 
       - name: Create .env
         run: |
@@ -57,4 +55,5 @@ jobs:
           EOF
 
       - name: Deploy
+        shell: powershell
         run: docker compose up -d
