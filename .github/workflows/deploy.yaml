@@ -21,9 +21,6 @@ jobs:
       - name: Build Docker image
         run: docker build -t 127.0.0.1:5000/idp:latest ./app
 
-      - name: Push Docker image
-        run: docker push 127.0.0.1:5000/idp:latest
-
   deploy:
     needs: build
 
