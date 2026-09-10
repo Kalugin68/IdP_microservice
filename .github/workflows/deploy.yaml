@@ -19,10 +19,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Build Docker image
-        run: |
-          docker build \
-          -t 127.0.0.1:5000/idp:latest \
-          ./app
+        run: docker build -t 127.0.0.1:5000/idp:latest ./app
 
       - name: Push Docker image
         run: docker push 127.0.0.1:5000/idp:latest
@@ -41,18 +38,17 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Create .env
-        run: |
-          cat > .env << EOF
-          JWT_PRIVATE=${{ secrets.JWT_PRIVATE }}
-          JWT_PUBLIC=${{ secrets.JWT_PUBLIC }}
-          JWT_ALGORITHM=EdDSA
-          
-          DB_NAME=identity_provider
-          DB_USER=postgres
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-
-          DB_DSN=postgresql+asyncpg://postgres:${{ secrets.DB_PASSWORD }}@postgres:5432/identity_provider
-          EOF
+        run: (
+            echo JWT_PRIVATE=${{ secrets.JWT_PRIVATE }}
+            echo JWT_PUBLIC=${{ secrets.JWT_PUBLIC }}
+            echo JWT_ALGORITHM=EdDSA
+            echo.
+            echo DB_NAME=identity_provider
+            echo DB_USER=postgres
+            echo DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            echo.
+            echo DB_DSN=postgresql+asyncpg://postgres:${{ secrets.DB_PASSWORD }}@postgres:5432/identity_provider
+          ) > .env
 
       - name: Deploy
         run: docker compose up -d
