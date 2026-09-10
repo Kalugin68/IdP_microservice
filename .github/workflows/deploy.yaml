@@ -12,7 +12,7 @@ jobs:
 
     defaults:
       run:
-        shell: powershell
+        shell: cmd
 
     steps:
       - name: Clone repository
@@ -34,7 +34,7 @@ jobs:
 
     defaults:
       run:
-        shell: powershell
+        shell: cmd
 
     steps:
       - name: Clone repository
@@ -55,5 +55,4 @@ jobs:
           EOF
 
       - name: Deploy
-        shell: powershell
         run: docker compose up -d
